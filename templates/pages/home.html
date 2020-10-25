@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% load static %}
+<div class='text-center'>
+<h1>Leh Creative Crew</h1>
+<img src={% static 'images/creativeimg.7fbe848e.jpeg' %} alt="My image"/>
+</div>
+<div class='text-center' id='about-div'>
+<p>
+We are an entertainment crew dedicated to production of funny 
+relatable content for our viewers <br/>
+Contact us via whatsapp to promote products and events
+</p>
+</div>
+<div id="video_element">
+
+</div>
+
+<script>
+
+const video_element = document.getElementById("video_element")
+
+const formatLink = video_dict => {
+  const rtnStr = video_dict.link
+  const id = rtnStr.slice(16)
+  console.log(id)
+  const iframe = '<div><iframe width="360" height="215" src="https://www.youtube.com/embed' + id + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>'
+  return iframe
+}
+
+const getVideosList = (videoEl) => {
+    xhr = new XMLHttpRequest;
+    const method = "GET";
+    const url = '/video_json'
+    const responseType = "json"
+    xhr.open(method, url)
+    xhr.responseType = responseType
+    xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+    xhr.setRequestHeader("X-Requested-With","XMLHttpRequest") 
+    xhr.onload = () => {
+        const serverResponse = xhr.response['response']
+        console.log(serverResponse)
+        let finalString = ""
+        for (let i = 0;i < serverResponse.length; i++){
+            
+            const embed = formatLink(serverResponse[i]) + '<div><h5>'+serverResponse[i].title+'</h5></div>'
+            finalString += embed
+        }
+        videoEl.innerHTML = finalString
+    }
+    xhr.send()
+}
+
+getVideosList(video_element);
+
+
+</script>
+{% endblock %}
